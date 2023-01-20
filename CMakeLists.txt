@@ -325,6 +325,8 @@ if (Obfuscation)
   set(linker_flags "${linker_flags} -Wl,-mllvm -Wl,-obfuscator-conf=all")
 endif ()
 
+set(compiler_flags "${compiler_flags} -fPIC")
+
 set_target_properties(dobby
   PROPERTIES
   LINK_FLAGS "${linker_flags}"
