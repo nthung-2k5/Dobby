@@ -12,8 +12,10 @@ env:
 
 jobs:
 
-  linux_and_android:
+  android:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: checkout master
       uses: actions/checkout@master
@@ -22,15 +24,6 @@ jobs:
       run: |
         sh scripts/setup_linux_cross_compile.sh
         mkdir -p artifact
-      shell: bash
-
-    - name: compile linux
-      run: |
-        python3 scripts/platform_builder.py --platform=linux --arch=all --cmake_dir=$HOME/opt/cmake-$CMAKE_VERSION --llvm_dir=$HOME/opt/llvm-$LLVM_VERSION
-        cp include/dobby.h build/linux
-        tar -zcvf build/dobby-linux-all.tar.gz build/linux
-        cp build/dobby-linux-all.tar.gz artifact/
-        
       shell: bash
     
     - name: compile android
@@ -48,9 +41,9 @@ jobs:
     - name: update release
       uses: ncipollo/release-action@v1
       with:
-        token: ${{ secrets.AUTH_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         tag: latest
         body: "a lightweight, multi-platform, multi-architecture exploit hook framework"
-        artifacts: "build/dobby-linux-all.tar.gz,build/dobby-android-all.tar.gz"
+        artifacts: "build/dobby-android-all.tar.gz"
         allowUpdates: true
         replacesArtifacts: true
